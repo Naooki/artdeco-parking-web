@@ -6,22 +6,23 @@ import { AngularFireModule } from '@angular/fire';
 
 import { environment } from '../environments/environment';
 import { AppRoutingModule } from './app-routing.module';
-import { CoreModule } from './core/core.module';
+import { AuthModule } from './auth/auth.module';
 
 import { AppComponent } from './app.component';
 import { MainComponent } from './main/main.component';
-import { LoginComponent } from './login/login.component';
 import { ParkingModule } from './parking/parking.module';
+import { SharedModule } from './shared/shared.module';
 
 @NgModule({
-  declarations: [AppComponent, MainComponent, LoginComponent],
+  declarations: [AppComponent, MainComponent],
   imports: [
     BrowserModule,
     BrowserAnimationsModule,
     ReactiveFormsModule,
+    SharedModule,
     AngularFireModule.initializeApp(environment.firebase),
     AppRoutingModule,
-    CoreModule,
+    AuthModule,
     ParkingModule,
   ],
   providers: [],

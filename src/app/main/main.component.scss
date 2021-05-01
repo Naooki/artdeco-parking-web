@@ -5,6 +5,14 @@
   gap: 1rem;
 }
 
-.main-content {
+.toolbar {
+  display: flex;
+}
+
+.toolbar__logo {
+  flex-grow: 1;
+}
+
+.main-container {
   padding: 1rem;
 }

@@ -1,0 +1,77 @@
+<form
+  class="container auth-form"
+  [formGroup]="authForm"
+  (ngSubmit)="onSubmit()"
+>
+  <mat-form-field class="iauth-form__nput-field">
+    <mat-label>Email</mat-label>
+    <input
+      type="email"
+      matInput
+      [formControl]="emailFormControl"
+      placeholder="example@test.com"
+    />
+    <mat-error
+      *ngIf="
+        emailFormControl.hasError('email') &&
+        !emailFormControl.hasError('required')
+      "
+    >
+      Please enter a valid email address
+    </mat-error>
+    <mat-error *ngIf="emailFormControl.hasError('required')">
+      Email is <strong>required</strong>
+    </mat-error>
+  </mat-form-field>
+
+  <mat-form-field class="auth-form__input-field">
+    <mat-label>Password</mat-label>
+    <input
+      type="password"
+      matInput
+      [formControl]="password1FormControl"
+      placeholder="Password"
+    />
+
+    <mat-error *ngIf="password1FormControl.hasError('required')">
+      Password is <strong>required</strong>
+    </mat-error>
+  </mat-form-field>
+
+  <mat-form-field class="auth-form__input-field">
+    <mat-label>Confirm Password</mat-label>
+    <input
+      type="password"
+      matInput
+      [formControl]="password2FormControl"
+      placeholder="Confirm assword"
+    />
+
+    <mat-error *ngIf="password2FormControl.hasError('required')">
+      Password confirmation is <strong>required</strong>
+    </mat-error>
+  </mat-form-field>
+
+  <mat-error
+    class="auth-form__error-msg"
+    *ngIf="
+      password1FormControl.touched &&
+      password2FormControl.touched &&
+      passwordFormGroup.hasError('passwordsDontMatch')
+    "
+  >
+    Passwords dont match
+  </mat-error>
+
+  <button
+    class="auth-form__action-btn"
+    [disabled]="!authForm.valid"
+    mat-raised-button
+    color="primary"
+    type="submit"
+  >
+    Sign Up
+  </button>
+
+  <a class="nav-link" [routerLink]="['/login']">Already have an account? Login</a>
+</form>

@@ -1,15 +1,17 @@
 import { Injectable } from '@angular/core';
 import { AngularFireAuth } from '@angular/fire/auth';
-import { BehaviorSubject, from } from 'rxjs';
+import { BehaviorSubject } from 'rxjs';
+import { map, switchMap } from 'rxjs/operators';
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class AuthService {
-  private readonly _currentUser$ = new BehaviorSubject(true);
-  readonly currentUser$ = this._currentUser$.asObservable();
+  private readonly _currentUserUpdate$ = new BehaviorSubject<void>(null);
+  readonly currentUser$ = this._currentUserUpdate$.pipe(
+    switchMap(() => this.angularFireAuth.currentUser)
+  );
 
-  constructor(private angularFireAuth: AngularFireAuth) { }
-
+  constructor(private angularFireAuth: AngularFireAuth) {}
 
   signIn({ email, password }: { email: string; password: string }) {
     return this.angularFireAuth.signInWithEmailAndPassword(email, password);
