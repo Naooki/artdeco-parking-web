@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject } from 'rxjs';
-
-
+import { AngularFireAuth } from '@angular/fire/auth';
+import { BehaviorSubject, from } from 'rxjs';
 @Injectable({
   providedIn: 'root'
 })
@@ -9,14 +8,18 @@ export class AuthService {
   private readonly _currentUser$ = new BehaviorSubject(true);
   readonly currentUser$ = this._currentUser$.asObservable();
 
-  constructor() { }
+  constructor(private angularFireAuth: AngularFireAuth) { }
 
 
-  login() {
-    this._currentUser$.next(true);
+  signIn({ email, password }: { email: string; password: string }) {
+    return this.angularFireAuth.signInWithEmailAndPassword(email, password);
+  }
+
+  signUp({ email, password }: { email: string; password: string }) {
+    return this.angularFireAuth.createUserWithEmailAndPassword(email, password);
   }
 
   logout() {
-    this._currentUser$.next(true);
+    return this.angularFireAuth.signOut();
   }
 }

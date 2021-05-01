@@ -1,5 +1,14 @@
 {
   "projects": {
     "default": "artdeco-parking"
+  },
+  "targets": {
+    "artdeco-parking": {
+      "hosting": {
+        "artdeco-parking-web": [
+          "artdeco-parking"
+        ]
+      }
+    }
   }
 }
