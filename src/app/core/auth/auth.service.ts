@@ -6,7 +6,7 @@ import { BehaviorSubject } from 'rxjs';
   providedIn: 'root'
 })
 export class AuthService {
-  private readonly _currentUser$ = new BehaviorSubject(false);
+  private readonly _currentUser$ = new BehaviorSubject(true);
   readonly currentUser$ = this._currentUser$.asObservable();
 
   constructor() { }

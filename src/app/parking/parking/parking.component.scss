@@ -1,0 +1,7 @@
+:host {
+  height: 100%;
+  display: grid;
+  grid-template-columns: 7fr 3fr;
+  grid-template-rows: minmax(0, 1fr);
+  gap: 1rem;
+}
