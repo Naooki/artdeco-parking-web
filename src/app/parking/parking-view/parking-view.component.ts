@@ -1,10 +1,4 @@
-import { Component, OnInit } from '@angular/core';
-import {
-  AngularFirestore,
-  AngularFirestoreCollection,
-} from '@angular/fire/firestore';
-import { forkJoin, Observable } from 'rxjs';
-import { map, switchMap } from 'rxjs/operators';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 
 import { Parking, ParkingLot } from '../Parking';
 
@@ -13,29 +7,14 @@ import { Parking, ParkingLot } from '../Parking';
   templateUrl: './parking-view.component.svg',
   styleUrls: ['./parking-view.component.scss'],
 })
-export class ParkingViewComponent implements OnInit {
-  parkingConfig$: Observable<Parking>;
-  parkingLots$: Observable<ParkingLot[]>;
+export class ParkingViewComponent {
+  @Input() parkingConfig: Parking;
+  @Input() parkingLots: ParkingLot[];
 
-  selectedLot = null;
+  @Input() selectedParkingLot: ParkingLot;
+  @Output() selectedParkingLotChange = new EventEmitter<ParkingLot>();
 
-  constructor(private afs: AngularFirestore) {}
-
-  ngOnInit(): void {
-    const parkingsCollection = this.afs.collection<any>('Parkings');
-
-    this.parkingConfig$ = parkingsCollection
-      .valueChanges({ idField: 'id' })
-      .pipe(map((parkings) => parkings[0]));
-
-    this.parkingLots$ = this.parkingConfig$.pipe(
-      switchMap((parking) =>
-        forkJoin<ParkingLot>(
-          parking.parkingLotIds.map((ref) =>
-            (ref.get() as any).then((res) => res.data())
-          )
-        )
-      )
-    );
+  onParkingLotSelected(parkingLot: ParkingLot) {
+    this.selectedParkingLotChange.emit(parkingLot);
   }
 }

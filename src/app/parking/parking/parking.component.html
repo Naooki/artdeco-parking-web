@@ -1,4 +1,11 @@
-<app-parking-view class="container"></app-parking-view>
-<div class="parking-lot-desc-area">
-  <app-parking-lot-desc class="container"></app-parking-lot-desc>
-</div>
+<ng-container *ngIf="parkingConfig$ | async as parkingConfig">
+  <app-parking-view
+    class="container"
+    [parkingConfig]="parkingConfig"
+    [parkingLots]="parkingLots$ | async"
+    [(selectedParkingLot)]="selectedParkingLot"
+  ></app-parking-view>
+  <div class="parking-lot-desc-area">
+    <app-parking-lot-desc class="container"></app-parking-lot-desc>
+  </div>
+</ng-container>
