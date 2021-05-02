@@ -1,63 +1,41 @@
 import { Component, OnInit } from '@angular/core';
+import {
+  AngularFirestore,
+  AngularFirestoreCollection,
+} from '@angular/fire/firestore';
+import { forkJoin, Observable } from 'rxjs';
+import { map, switchMap } from 'rxjs/operators';
+
+import { Parking, ParkingLot } from '../Parking';
 
 @Component({
   selector: 'app-parking-view',
   templateUrl: './parking-view.component.svg',
-  styleUrls: ['./parking-view.component.scss']
+  styleUrls: ['./parking-view.component.scss'],
 })
 export class ParkingViewComponent implements OnInit {
-
-  readonly parkingConfig = {
-    width: 600,
-    height: 2000,
-    lots: [
-      // left-row
-      { x: 5, y: 50, width: 200, height: 90 },
-      { x: 5, y: 150, width: 200, height: 90 },
-      { x: 5, y: 250, width: 200, height: 90 },
-      { x: 5, y: 350, width: 200, height: 90 },
-      { x: 5, y: 450, width: 200, height: 90 },
-      { x: 5, y: 550, width: 200, height: 90 },
-      { x: 5, y: 650, width: 200, height: 90 },
-      { x: 5, y: 750, width: 200, height: 90 },
-      { x: 5, y: 850, width: 200, height: 90 },
-      { x: 5, y: 950, width: 200, height: 90 },
-      { x: 5, y: 1050, width: 200, height: 90 },
-      { x: 5, y: 1150, width: 200, height: 90 },
-      { x: 5, y: 1250, width: 200, height: 90 },
-      { x: 5, y: 1350, width: 200, height: 90 },
-      { x: 5, y: 1450, width: 200, height: 90 },
-      { x: 5, y: 1550, width: 200, height: 90 },
-      { x: 5, y: 1650, width: 200, height: 90 },
-      { x: 5, y: 1750, width: 200, height: 90 },
-      { x: 5, y: 1850, width: 200, height: 90 },
-      // right-row
-      { x: 395, y: 50, width: 200, height: 90 },
-      { x: 395, y: 150, width: 200, height: 90 },
-      { x: 395, y: 250, width: 200, height: 90 },
-      { x: 395, y: 350, width: 200, height: 90 },
-      { x: 395, y: 450, width: 200, height: 90 },
-      { x: 395, y: 550, width: 200, height: 90 },
-      { x: 395, y: 650, width: 200, height: 90 },
-      { x: 395, y: 750, width: 200, height: 90 },
-      { x: 395, y: 850, width: 200, height: 90 },
-      { x: 395, y: 950, width: 200, height: 90 },
-      { x: 395, y: 1050, width: 200, height: 90 },
-      { x: 395, y: 1150, width: 200, height: 90 },
-      { x: 395, y: 1250, width: 200, height: 90 },
-      { x: 395, y: 1350, width: 200, height: 90 },
-      { x: 395, y: 1450, width: 200, height: 90 },
-      { x: 395, y: 1550, width: 200, height: 90 },
-      { x: 395, y: 1650, width: 200, height: 90 },
-      { x: 395, y: 1750, width: 200, height: 90 },
-      { x: 395, y: 1850, width: 200, height: 90 },
-    ],
-  }
+  parkingConfig$: Observable<Parking>;
+  parkingLots$: Observable<ParkingLot[]>;
 
   selectedLot = null;
 
-  constructor() { }
+  constructor(private afs: AngularFirestore) {}
 
   ngOnInit(): void {
+    const parkingsCollection = this.afs.collection<any>('Parkings');
+
+    this.parkingConfig$ = parkingsCollection
+      .valueChanges({ idField: 'id' })
+      .pipe(map((parkings) => parkings[0]));
+
+    this.parkingLots$ = this.parkingConfig$.pipe(
+      switchMap((parking) =>
+        forkJoin<ParkingLot>(
+          parking.parkingLotIds.map((ref) =>
+            (ref.get() as any).then((res) => res.data())
+          )
+        )
+      )
+    );
   }
 }

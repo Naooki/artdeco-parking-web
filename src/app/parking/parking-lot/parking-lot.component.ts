@@ -7,6 +7,8 @@ import {
   Output,
 } from '@angular/core';
 
+import { ParkingLot } from '../Parking';
+
 @Component({
   selector: '[app-parking-lot]',
   templateUrl: './parking-lot.component.html',
@@ -14,7 +16,7 @@ import {
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ParkingLotComponent {
-  @Input() lot: { x: number; y: number; width: number; height: number };
+  @Input() lot: ParkingLot;
   @Input() isSelected = false;
   @Output() select = new EventEmitter<void>();
 

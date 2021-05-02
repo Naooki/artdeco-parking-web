@@ -1,3 +1,7 @@
-<svg class="parking-view-container" [attr.width]="parkingConfig.width" [attr.height]="parkingConfig.height" xmlns="http://www.w3.org/2000/svg">
-  <g *ngFor="let lot of parkingConfig.lots" app-parking-lot [lot]="lot" [isSelected]="selectedLot === lot" (select)="selectedLot = lot"></g>
-</svg>
+<ng-container *ngIf="parkingConfig$ | async as parkingConfig">
+  <svg class="parking-view-container" [attr.width]="parkingConfig.width" [attr.height]="parkingConfig.height" xmlns="http://www.w3.org/2000/svg">
+    <ng-container *ngIf="parkingLots$ | async as lots">
+      <g *ngFor="let lot of lots" app-parking-lot [lot]="lot" [isSelected]="selectedLot === lot" (select)="selectedLot = lot"></g>
+    </ng-container>
+  </svg>
+</ng-container>
