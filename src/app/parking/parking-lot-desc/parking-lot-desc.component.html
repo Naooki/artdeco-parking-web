@@ -1,1 +1,14 @@
-<p>parking-lot-desc works!</p>
+<h3>Parking lot: {{parkingLot.name}}</h3>
+<ul class="details-list">
+  <li class="details-list__item">
+    <div>Status:</div>
+    <div>{{ parkingLot.status }}</div>
+  </li>
+  <li class="details-list__item">
+    <div>Booked by:</div>
+    <div>{{ parkingLot.userId || "-" }}</div>
+  </li>
+</ul>
+<div class="actions">
+  <button class="actions__btn" mat-raised-button color="primary">Book</button>
+</div>

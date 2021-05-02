@@ -13,6 +13,7 @@ export interface ParkingLot {
   y: number;
   width: number;
   height: number;
-  status: 'OPEN';
+  name: string;
+  status: 'OPEN' | 'BOOKED' | 'UNAVAILABLE';
   userId: string | null;
 }

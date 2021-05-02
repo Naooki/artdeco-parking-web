@@ -6,6 +6,10 @@
     [(selectedParkingLot)]="selectedParkingLot"
   ></app-parking-view>
   <div class="parking-lot-desc-area">
-    <app-parking-lot-desc class="container"></app-parking-lot-desc>
+    <app-parking-lot-desc
+      *ngIf="selectedParkingLot"
+      [parkingLot]="selectedParkingLot"
+      class="container"
+    ></app-parking-lot-desc>
   </div>
 </ng-container>

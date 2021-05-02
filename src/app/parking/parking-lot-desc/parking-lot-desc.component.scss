@@ -1,3 +1,21 @@
 :host {
   display: block;
 }
+
+.details-list {
+  padding: 0;
+  list-style: none;
+}
+
+.details-list__item {
+  display: grid;
+  grid-template-columns: 4fr 6fr;
+}
+
+.actions {
+  display: flex;
+}
+
+.actions__btn {
+  flex-grow: 1;
+}

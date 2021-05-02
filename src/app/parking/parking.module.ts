@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
 import { AngularFirestoreModule } from '@angular/fire/firestore';
 
+import { SharedModule } from '../shared/shared.module';
 import { ParkingViewComponent } from './parking-view/parking-view.component';
 import { ParkingLotComponent } from './parking-lot/parking-lot.component';
 import { ParkingLotDescComponent } from './parking-lot-desc/parking-lot-desc.component';
@@ -17,7 +17,7 @@ import { ParkingComponent } from './parking/parking.component';
     ParkingComponent
   ],
   imports: [
-    CommonModule,
+    SharedModule,
     AngularFirestoreModule,
   ],
   exports: [
