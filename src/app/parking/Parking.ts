@@ -7,6 +7,12 @@ export interface Parking {
   parkingLotIds: AngularFirestoreDocument<ParkingLot>[];
 }
 
+export const enum ParkingLotStatus {
+  Open = 'open',
+  Booked = 'booked',
+  Unavailable = 'unavailable',
+}
+
 export interface ParkingLot {
   id: string;
   x: number;
@@ -14,6 +20,7 @@ export interface ParkingLot {
   width: number;
   height: number;
   name: string;
-  status: 'OPEN' | 'BOOKED' | 'UNAVAILABLE';
+  status: ParkingLotStatus;
   userId: string | null;
+  userEmail?: string | null;
 }

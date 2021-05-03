@@ -13,6 +13,10 @@ export class AuthService {
 
   constructor(private angularFireAuth: AngularFireAuth) {}
 
+  getCurrentUser() {
+    return this.angularFireAuth.currentUser;
+  }
+
   signIn({ email, password }: { email: string; password: string }) {
     return this.angularFireAuth.signInWithEmailAndPassword(email, password);
   }

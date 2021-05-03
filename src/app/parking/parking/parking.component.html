@@ -9,6 +9,7 @@
     <app-parking-lot-desc
       *ngIf="selectedParkingLot"
       [parkingLot]="selectedParkingLot"
+      (bookingToggle)="onBookingToggle()"
       class="container"
     ></app-parking-lot-desc>
   </div>
