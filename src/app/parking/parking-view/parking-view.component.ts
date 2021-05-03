@@ -17,4 +17,8 @@ export class ParkingViewComponent {
   onParkingLotSelected(parkingLot: ParkingLot) {
     this.selectedParkingLotChange.emit(parkingLot);
   }
+
+  trackById(index: number, item: { id: string }) {
+    return item.id;
+  }
 }

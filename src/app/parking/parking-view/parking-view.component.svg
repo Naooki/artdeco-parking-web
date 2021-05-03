@@ -1,5 +1,5 @@
 <svg class="parking-view-container" [attr.width]="parkingConfig.width" [attr.height]="parkingConfig.height" xmlns="http://www.w3.org/2000/svg">
   <ng-container *ngIf="parkingLots">
-    <g *ngFor="let lot of parkingLots" app-parking-lot [lot]="lot" [isSelected]="selectedParkingLot === lot" (select)="onParkingLotSelected(lot)"></g>
+    <g *ngFor="let lot of parkingLots; trackBy:trackById" app-parking-lot [lot]="lot" [isSelected]="selectedParkingLot?.id === lot.id" (select)="onParkingLotSelected(lot)"></g>
   </ng-container>
 </svg>

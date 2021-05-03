@@ -12,13 +12,13 @@ import { ParkingLot } from '../Parking';
 })
 export class ParkingLotDescComponent {
   @Input() parkingLot: ParkingLot;
-  @Output() bookingToggle = new EventEmitter<void>();
+  @Output() bookingToggle = new EventEmitter<ParkingLot>();
 
   readonly currentUserId$ = this.authService.currentUser$.pipe(pluck('uid'));
 
   constructor(private authService: AuthService) {}
 
   onBookingToggle() {
-    this.bookingToggle.emit();
+    this.bookingToggle.emit(this.parkingLot);
   }
 }

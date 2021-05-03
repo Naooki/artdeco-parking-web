@@ -3,13 +3,14 @@
     class="container"
     [parkingConfig]="parkingConfig"
     [parkingLots]="parkingLots$ | async"
-    [(selectedParkingLot)]="selectedParkingLot"
+    [selectedParkingLot]="selectedParkingLot$ | async"
+    (selectedParkingLotChange)="onSelectedParkingLotChange($event)"
   ></app-parking-view>
   <div class="parking-lot-desc-area">
     <app-parking-lot-desc
-      *ngIf="selectedParkingLot"
-      [parkingLot]="selectedParkingLot"
-      (bookingToggle)="onBookingToggle()"
+      *ngIf="selectedParkingLot$ | async as lot"
+      [parkingLot]="lot"
+      (bookingToggle)="onBookingToggle($event)"
       class="container"
     ></app-parking-lot-desc>
   </div>

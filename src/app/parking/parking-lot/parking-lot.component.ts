@@ -8,8 +8,8 @@ import {
 } from '@angular/core';
 import { BehaviorSubject, combineLatest } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { AuthService } from 'src/app/auth/auth.service';
 
+import { AuthService } from 'src/app/auth/auth.service';
 import { ParkingLot, ParkingLotStatus } from '../Parking';
 
 @Component({
@@ -19,9 +19,16 @@ import { ParkingLot, ParkingLotStatus } from '../Parking';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ParkingLotComponent {
+  private readonly _parkingLot$ = new BehaviorSubject<ParkingLot>(null);
   private readonly _isSelected$ = new BehaviorSubject(false);
 
-  @Input() lot: ParkingLot;
+  get lot() {
+    return this._parkingLot$.value;
+  }
+
+  @Input() set lot(value: ParkingLot) {
+    this._parkingLot$.next(value);
+  }
   @Input() set isSelected(v: boolean) {
     this._isSelected$.next(v);
   }
@@ -30,11 +37,12 @@ export class ParkingLotComponent {
   constructor(private authService: AuthService) {}
 
   readonly style$ = combineLatest([
+    this._parkingLot$,
     this.authService.currentUser$,
     this._isSelected$,
   ]).pipe(
-    map(([user, isSelected]) => {
-      const color = this.getParkingLotFillColor(user.uid);
+    map(([parkingLot, user, isSelected]) => {
+      const color = this.getParkingLotFillColor(parkingLot, user.uid);
       return {
         fill: color,
         stroke: isSelected ? '#008ace' : color,
@@ -54,14 +62,14 @@ export class ParkingLotComponent {
     this.select.emit();
   }
 
-  private getParkingLotFillColor(currUserId: string) {
-    if (this.lot.status === ParkingLotStatus.Unavailable) {
+  private getParkingLotFillColor(lot: ParkingLot, currUserId: string) {
+    if (lot.status === ParkingLotStatus.Unavailable) {
       return '#d9dae1';
     }
-    if (this.lot.userId === currUserId) {
+    if (lot.userId === currUserId) {
       return '#d2eaad';
     }
-    if (this.lot.userId) {
+    if (lot.userId) {
       return '#ff9999';
     }
     return '#b8def0';

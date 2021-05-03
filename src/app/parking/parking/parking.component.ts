@@ -1,7 +1,10 @@
 import { Component, OnInit } from '@angular/core';
-import { AngularFirestore } from '@angular/fire/firestore';
-import { forkJoin, Observable } from 'rxjs';
-import { map, switchMap } from 'rxjs/operators';
+import {
+  AngularFirestore,
+  AngularFirestoreCollection,
+} from '@angular/fire/firestore';
+import { BehaviorSubject, Observable, of } from 'rxjs';
+import { share, switchMap } from 'rxjs/operators';
 import { AuthService } from 'src/app/auth/auth.service';
 
 import { Parking, ParkingLot, ParkingLotStatus } from '../Parking';
@@ -15,7 +18,20 @@ export class ParkingComponent implements OnInit {
   parkingConfig$: Observable<Parking>;
   parkingLots$: Observable<ParkingLot[]>;
 
-  selectedParkingLot: ParkingLot = null;
+  parkingsCollection: AngularFirestoreCollection<Parking>;
+  parkingsLotsCollection: AngularFirestoreCollection<ParkingLot>;
+
+  private readonly _selectedParkingLotId$ = new BehaviorSubject('');
+  selectedParkingLot$ = this._selectedParkingLotId$.pipe(
+    switchMap((id) =>
+      id
+        ? this.parkingsLotsCollection
+            .doc(`/${id}`)
+            .valueChanges({ idField: 'id' })
+        : of(null)
+    ),
+    share()
+  );
 
   constructor(
     private afs: AngularFirestore,
@@ -23,20 +39,30 @@ export class ParkingComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    const parkingsCollection = this.afs.collection<any>('Parkings');
+    this.parkingsCollection = this.afs.collection<Parking>('Parkings');
 
-    this.parkingConfig$ = parkingsCollection
-      .valueChanges({ idField: 'id' })
-      .pipe(map((parkings) => parkings[0]));
+    this.parkingConfig$ = this.parkingsCollection
+      .doc('/0f2a4157-0d08-43b9-98fe-1a3c0b9ccfc2')
+      .valueChanges({ idField: 'id' });
 
-    this.resetParkingLots();
+    this.parkingsLotsCollection = this.parkingsCollection
+      .doc('/0f2a4157-0d08-43b9-98fe-1a3c0b9ccfc2')
+      .collection<ParkingLot>('lots');
+
+    this.parkingLots$ = this.parkingsLotsCollection.valueChanges({
+      idField: 'id',
+    });
   }
 
-  async onBookingToggle() {
+  onSelectedParkingLotChange(lot: ParkingLot) {
+    this._selectedParkingLotId$.next(lot.id);
+  }
+
+  async onBookingToggle(parkingLot: ParkingLot) {
     let status: ParkingLotStatus;
     let userId: string;
     let userEmail: string;
-    if (this.selectedParkingLot.status === ParkingLotStatus.Open) {
+    if (parkingLot.status === ParkingLotStatus.Open) {
       status = ParkingLotStatus.Booked;
       const user = await this.authService.getCurrentUser();
       userId = user.uid;
@@ -46,19 +72,9 @@ export class ParkingComponent implements OnInit {
       userId = null;
       userEmail = null;
     }
-    await this.afs
-      .doc<ParkingLot>(`ParkingLots/${this.selectedParkingLot.id}`)
-      .update({ status, userId, userEmail });
-    this.resetParkingLots();
-  }
 
-  private resetParkingLots() {
-    this.parkingLots$ = this.parkingConfig$.pipe(
-      switchMap((parking) =>
-        forkJoin(parking.parkingLotIds.map((ref) => ref.get()))
-      ),
-      map((daos) => daos.map((dao) => ({ id: dao.id, ...dao.data() })))
-    );
-    this.selectedParkingLot = null;
+    await this.parkingsLotsCollection
+      .doc(`/${parkingLot.id}`)
+      .update({ status, userId, userEmail });
   }
 }
