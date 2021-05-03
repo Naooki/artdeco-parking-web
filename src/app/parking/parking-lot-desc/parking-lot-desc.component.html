@@ -7,7 +7,7 @@
     </li>
     <li class="details-list__item">
       <div>Booked by:</div>
-      <div>{{ parkingLot.userEmail || "-" }}</div>
+      <div>{{ currUserId === parkingLot.userId ? 'You' : getBookedBy }}</div>
     </li>
   </ul>
   <div class="actions">
